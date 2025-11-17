@@ -1,0 +1,18 @@
+services:
+  txparser:
+    container_name: ${COMPOSE_PROJECT_NAME:-solanaswap-go}-txparser-1
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: txparser-local:dev
+    ports:
+      - "127.0.0.1:${HOST_PORT:-8080}:8080"
+    environment:
+      # expose your RPC etc. from .env automatically if you like
+      - HELIUS_RPC=${HELIUS_RPC}
+    healthcheck:
+      # the server inside the container listens on 8080
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/healthz"]
+      interval: 10s
+      timeout: 2s
+      retries: 6
